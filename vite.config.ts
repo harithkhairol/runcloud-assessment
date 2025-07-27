@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue'
 import laravel from 'laravel-vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig({
   plugins: [
@@ -20,16 +19,15 @@ export default defineConfig({
         },
       },
     }),
-    nodePolyfills({
-      protocolImports: true, // Important for crypto
-    }),
   ],
   define: {
-    'process.env': {}, // Prevent process.env undefined
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext', // Required for polyfills
+    // 👇 this disables `crypto.hash()` call
+    'crypto': {
+      createHash: () => ({
+        update: () => ({
+          digest: () => 'noop',
+        }),
+      }),
     },
   },
 })
