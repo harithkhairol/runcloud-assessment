@@ -21,13 +21,15 @@ export default defineConfig({
       },
     }),
     nodePolyfills({
-      protocolImports: true,
+      protocolImports: true, // Important for crypto
     }),
   ],
   define: {
-    'process.env': {},
+    'process.env': {}, // Prevent process.env undefined
   },
   optimizeDeps: {
-    include: ['crypto'],
+    esbuildOptions: {
+      target: 'esnext', // Required for polyfills
+    },
   },
 })
